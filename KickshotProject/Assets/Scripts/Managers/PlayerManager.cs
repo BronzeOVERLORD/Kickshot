@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviour
         LevelTimer timer = GetComponent<LevelTimer>();
 
         timer.Reset();
-        Player.GetComponent<PlayerController>().ResetPlayerVars();
+        //Player.GetComponent<PlayerController>().ResetPlayerVars();
 
         Vector3 startLoc;
         RaycastHit groundHit = new RaycastHit();
