@@ -10,7 +10,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
     {
         public GameObject FacingDirection;
         public Camera Cam;
-        public Rigidbody m_RigidBody;
         public float TargetGroundSpeed = 2;
         public float AccelerationFactor = 1;
         public float DecelerationFraction = 0.05f;
@@ -18,23 +17,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float KickSpeed = 50f;
         public float TurnSpeed = 0.4f;
         public MouseLook mouseLook = new MouseLook();
-
+        
+        private Rigidbody m_RigidBody;
         private CapsuleCollider m_Capsule;
-        private float m_YRotation;
         private Vector3 m_GroundContactNormal;
         private bool m_IsGrounded, m_CameraBackward;
 
-
-        public Vector3 Velocity
-        {
-            get { return m_RigidBody.velocity; }
-        }
-
-        public bool Grounded
-        {
-            get { return m_IsGrounded; }
-        }
-
+        private Vector3 m_MoveDir;
 
         private void Start()
         {
@@ -48,8 +37,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void Update()
         {
             RotateView();
+            MovementInput();
             ActionInputs();
         }
+
+
         private void RotateView()
         {
             //avoids the mouse looking if the game is effectively paused
@@ -61,6 +53,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             mouseLook.LookRotation (transform, FacingDirection.transform);
             
         }
+
+        private void MovementInput()
+        {
+            m_MoveDir = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f).normalized;
+        }
+
         private void ActionInputs()
         {
             if(Input.GetButtonDown("Fire1"))
@@ -75,12 +73,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             m_CameraBackward = Input.GetButton("TurnAround");
         } 
+
         void ApplyKick(float Speed)
         {
             Vector3 kickVel = -1 * Cam.transform.forward * Speed;
 
             m_RigidBody.velocity += kickVel;
         }
+
 
         #endregion
 
@@ -89,9 +89,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void FixedUpdate()
         {
             GroundCheck();
-            MovementInput();
+            ApplyMovement();
             TurnAroundUpdate();
         }
+
+
         private void GroundCheck()
         {
             RaycastHit hitInfo;
@@ -107,31 +109,40 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_GroundContactNormal = Vector3.up;
             }
         }
-        private void MovementInput()
+
+        private void ApplyMovement()
         {
-            Vector3 accelDir;
-            Vector3 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            accelDir = FacingDirection.transform.forward * input.y + FacingDirection.transform.right * input.x;
+            Vector3 accelDir = FacingDirection.transform.forward * m_MoveDir.y + FacingDirection.transform.right * m_MoveDir.x;
             accelDir = Vector3.ProjectOnPlane(accelDir, m_GroundContactNormal).normalized;
 
             if (m_IsGrounded)
             {
-                m_RigidBody.velocity += accelDir * AccelerationFactor;
-
-
-                if (m_RigidBody.velocity.magnitude > TargetGroundSpeed)
-                    m_RigidBody.velocity *= 0.95f;
-                if(input == Vector3.zero)
-                {
-                    Vector3 reducedVel = m_RigidBody.velocity - m_RigidBody.velocity.normalized * TargetGroundSpeed * DecelerationFraction;
-                    m_RigidBody.velocity = Vector3.Dot(reducedVel, m_RigidBody.velocity) < 0 ? Vector3.zero : reducedVel;
-                }
+                if (m_RigidBody.velocity.magnitude < TargetGroundSpeed)
+                    m_RigidBody.velocity += accelDir * AccelerationFactor;
+                ApplyFriction();
             }
             else
             {
                 m_RigidBody.velocity += accelDir * AccelerationFactor * AirControl;
             }
+
+            print(m_RigidBody.velocity);
         }
+
+        private void ApplyFriction()
+        {
+            if (m_MoveDir == Vector3.zero)
+            {
+                Vector3 reducedVel = m_RigidBody.velocity - m_RigidBody.velocity.normalized * TargetGroundSpeed * DecelerationFraction;
+                m_RigidBody.velocity = Vector3.Dot(reducedVel, m_RigidBody.velocity) < 0 ? Vector3.zero : reducedVel;
+            }
+            else if (m_RigidBody.velocity.magnitude > TargetGroundSpeed)
+            {
+                Vector3 reducedVel = m_RigidBody.velocity - m_RigidBody.velocity.normalized * TargetGroundSpeed * DecelerationFraction;
+                m_RigidBody.velocity = m_RigidBody.velocity.magnitude < TargetGroundSpeed ? TargetGroundSpeed * m_RigidBody.velocity : reducedVel;
+            }
+        }
+
         private void TurnAroundUpdate()
         {
             Quaternion target = Quaternion.identity;
@@ -139,6 +150,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 target = Quaternion.Euler(0, 180, 0);
             Cam.transform.localRotation = Quaternion.Lerp(Cam.transform.localRotation, target, TurnSpeed);
         }
+
         #endregion
 
 
