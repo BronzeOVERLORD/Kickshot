@@ -1,39 +1,43 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System.Text;
 
 namespace LevelEditor
 {
-    public class LevelEditorManager : MonoBehaviour
+    public class LevelEditorManager : Singleton<LevelEditorManager>
     {
+        public static string objectTag = "LevelObject";
 
-        public string objectTag = "LevelObject";
-
-        public void Export()
+        public static void Export()
         {
             List<GameObject> objs = new List<GameObject>(GameObject.FindGameObjectsWithTag(objectTag));
-            LevelObject testObj = ComputeTransformStruct(objs[0]);
-            Debug.Log(JsonUtility.ToJson(testObj));
+            List<LevelObject> lvlObjs = new List<LevelObject>();
+            foreach (GameObject o in objs) {
+                LevelObject lo = o.GetComponent<LevelObject>();
+                if (lo != null) {
+                    lvlObjs.Add(lo);
+                }
+            }
+            string json = JsonifyObjects(lvlObjs);
+            Debug.Log(json);
+
+            Debug.Log((Application.persistentDataPath)); 
+            FileStream file = new FileStream(Application.persistentDataPath + "/level.json", FileMode.OpenOrCreate);
+            file.Write(Encoding.UTF8.GetBytes(json), 0, json.Length);
         }
 
-        private LevelObject ComputeTransformStruct(GameObject o)
+        private static string JsonifyObjects(List<LevelObject> objs)
         {
-            LevelObject ret;
-            ret.name = o.name;
-            ret.position = o.transform.position;
-            ret.rotation = o.transform.rotation;
-            ret.scale = o.transform.localScale;
+            string ret = "";
+            for (int i = 0; i < objs.Count; i++) {
+                ret += "\n" + objs[i].ToJson();
+            }
             return ret;
         }
     }
 
-    [System.Serializable]
-    public struct LevelObject
-    {
-        public string name;
-        public Vector3 position;
-        public Quaternion rotation;
-        public Vector3 scale;
-    }
+
 
 }

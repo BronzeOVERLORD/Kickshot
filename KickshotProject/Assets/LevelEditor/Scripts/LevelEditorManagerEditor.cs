@@ -13,10 +13,11 @@ namespace LevelEditor
         {
             DrawDefaultInspector();
 
-            LevelEditorManager lvlEManager = (LevelEditorManager)target;
+            GUILayout.TextField(LevelEditorManager.objectTag);
+
             if (GUILayout.Button("Export Level"))
             {
-                lvlEManager.Export();
+                LevelEditorManager.Export();
             }
         }
     }
