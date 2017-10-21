@@ -10,6 +10,9 @@ namespace LevelEditor
     {
         public static string objectTag = "LevelObject";
 
+        /// <summary>
+        /// Exports the level to json
+        /// </summary>
         public static void Export()
         {
             List<GameObject> objs = new List<GameObject>(GameObject.FindGameObjectsWithTag(objectTag));
@@ -20,24 +23,36 @@ namespace LevelEditor
                     lvlObjs.Add(lo);
                 }
             }
-            string json = JsonifyObjects(lvlObjs);
-            Debug.Log(json);
-
-            Debug.Log((Application.persistentDataPath)); 
+            string json = JsonObjects(lvlObjs);
             FileStream file = new FileStream(Application.persistentDataPath + "/level.json", FileMode.OpenOrCreate);
             file.Write(Encoding.UTF8.GetBytes(json), 0, json.Length);
         }
 
-        private static string JsonifyObjects(List<LevelObject> objs)
+        /// <summary>
+        /// Imports a level from json
+        /// </summary>
+        public static void Import(string filePath)
         {
-            string ret = "";
-            for (int i = 0; i < objs.Count; i++) {
-                ret += "\n" + objs[i].ToJson();
+            
+        }
+
+        private static string JsonObjects(List<LevelObject> objs)
+        {
+            string ret = "[";
+            for (int i = 0; i < objs.Count; i++)
+            {
+
+                LevelObjectStruct lvlObjS = objs[i].ComputeStruct();
+                if (i < objs.Count - 1)
+                {
+                    ret += JsonUtility.ToJson(lvlObjS) + ",";
+                }
+                else
+                {
+                    ret += JsonUtility.ToJson(lvlObjS) + "]";
+                }
             }
             return ret;
         }
     }
-
-
-
 }

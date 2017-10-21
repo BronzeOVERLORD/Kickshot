@@ -10,16 +10,6 @@ namespace LevelEditor
         public int prefabID;
 
         /// <summary>
-        /// Returns the JSON for this level object
-        /// </summary>
-        /// <returns>JSON string</returns>
-        public string ToJson()
-        {
-            LevelObjectStruct obj = ComputeStruct();
-            return JsonUtility.ToJson(obj);
-        }
-
-        /// <summary>
         /// Computes the the LevelObjectStruct for serialization from the LevelObject.
         /// </summary>
         /// <returns>The LevelObjectStruct.</returns>
