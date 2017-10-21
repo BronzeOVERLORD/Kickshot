@@ -11,6 +11,7 @@ public class HierarchyUI : MonoBehaviour {
     [Header ("References")]
     public GameObject outerPanel;
     public GameObject innerPanel;
+    public string levelEditorAssetPath;
 
     [Header ("Prefabs")]
     public GameObject folderPrefab;
@@ -19,23 +20,15 @@ public class HierarchyUI : MonoBehaviour {
 
     private void Start()
     {
-        string rootPath = Application.dataPath + "/LevelEditor/Structures";
-        string[] directories = Directory.GetDirectories(rootPath);
-        string[] files = Directory.GetFiles(rootPath, "*.prefab");
+        string rootPath = Application.dataPath + levelEditorAssetPath;
 
-        GameObject folderObj = Instantiate(folderPrefab, Vector3.zero, Quaternion.identity);
-        folderObj.transform.SetParent(innerPanel.transform);
+        GameObject folderObj = Instantiate(folderPrefab, Vector3.zero, Quaternion.identity, innerPanel.transform);
         rootFolder = folderObj.GetComponent<DirectoryUI>();
+        rootFolder.folderPath = rootPath;
+        string[] strs = rootPath.Split('/');
+        rootFolder.FolderName = strs[strs.Length - 1];
+        rootFolder.Open();
 
-        Debug.Log("Files");
-        foreach (string file in files)
-        {
-            Debug.Log(file);
-        }
-        Debug.Log("Directories");
-        foreach (string dir in directories)
-        {
-            Debug.Log(dir);
-        }
+        Debug.Log("Total Height: " + rootFolder.GetHeight());
     }
 }
