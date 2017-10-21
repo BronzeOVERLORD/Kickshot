@@ -9,8 +9,8 @@ public class HierarchyUI : MonoBehaviour {
     public DirectoryUI rootFolder;
 
     [Header ("References")]
-    public GameObject outerPanel;
-    public GameObject innerPanel;
+    public RectTransform outerPanel;
+    public RectTransform innerPanel;
     public string levelEditorAssetPath;
 
     [Header ("Prefabs")]
@@ -22,8 +22,10 @@ public class HierarchyUI : MonoBehaviour {
     {
         string rootPath = Application.dataPath + levelEditorAssetPath;
 
-        GameObject folderObj = Instantiate(folderPrefab, Vector3.zero, Quaternion.identity, innerPanel.transform);
+        //Instantiates all directories and assets
+        GameObject folderObj = Instantiate(folderPrefab, innerPanel.transform.position, Quaternion.identity, innerPanel.gameObject.transform);
         rootFolder = folderObj.GetComponent<DirectoryUI>();
+        RectTransform folderRect = folderObj.GetComponent<RectTransform>();
         rootFolder.folderPath = rootPath;
         string[] strs = rootPath.Split('/');
         rootFolder.FolderName = strs[strs.Length - 1];

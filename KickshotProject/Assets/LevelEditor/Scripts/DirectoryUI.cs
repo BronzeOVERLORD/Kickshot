@@ -60,7 +60,7 @@ public class DirectoryUI : MonoBehaviour {
         string[] files = Directory.GetFiles(folderPath, "*.prefab");
 
         foreach (string dir in directories) {
-            GameObject newDir = Instantiate(folderUIPrefab, Vector3.zero, Quaternion.identity, transform);
+            GameObject newDir = Instantiate(folderUIPrefab, transform.position, Quaternion.identity, transform);
             DirectoryUI newDirUI = newDir.GetComponent<DirectoryUI>();
             newDirUI.folderPath = dir;
             string[] path = dir.Split('/');
