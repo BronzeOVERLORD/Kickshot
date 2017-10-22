@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 0c3f272c90e624488bcbc9dcc375296b
-timeCreated: 1508564088
+guid: 3805a93b7184440c9b10e5e89f1cc8c9
+timeCreated: 1508697881
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -9,14 +9,13 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: pCube1
-    9500000: //RootNode
+    4300000: building10x10x30
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: lambert1
-    second: {fileID: 2100000, guid: 50695f335f9bc9f49a4b0bff1b7009ee, type: 2}
+      name: lambert2
+    second: {fileID: 2100000, guid: 2bd742e9bf5f449fcb7dac10d8c8510c, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -88,7 +87,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

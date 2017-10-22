@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 1a4b376a824334005affef6ba9db4428
-timeCreated: 1508564088
+guid: 74ed5580ba6d5477fa0fb7aec946b3af
+timeCreated: 1508697881
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -10,7 +10,6 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: pCube1
-    9500000: //RootNode
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -88,7 +87,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
